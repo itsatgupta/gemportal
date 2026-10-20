@@ -1,0 +1,59 @@
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+.claude/
+*.pem
+*.key
+*.p12
+*.pfx
+*.credentials.json
+*.secrets.json
+
+# Private bid packages, downloaded documents, and generated outputs
+/bids/
+/bidsupportingdocs/
+/Samplebiddocs/
+/*.pdf
+/*.PDF
+/docs/ANAMAC_Bid_Platform_Presentation.pptx
+/backend/qa_reports/
+/reports/
+/proposals/
+
+# Local databases and Docker volume state
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-*
+/docker-data/
+/volumes/
+
+# Dependencies and build output
+node_modules/
+dist/
+web-dist/
+.venv/
+venv/
+*.egg-info/
+
+# Caches, logs, and generated Python files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+coverage/
+*.log
+logs/
+*.backup
+*.bak
+
+# OS and editor artifacts
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~

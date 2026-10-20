@@ -1,0 +1,50 @@
+services:
+
+  # ─── Backend: FastAPI + Agents ───────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: anamac-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Override directory paths to use /app-mounted volumes
+      BIDS_BASE_DIR: /app/bids
+      BID_SUPPORTING_DOCS_DIR: /app/bidsupportingdocs
+      # Allow requests from nginx frontend
+      ALLOWED_ORIGINS: "http://localhost:5173,http://localhost"
+    volumes:
+      # Bind-mount local folders so files are directly accessible on Mac
+      - ./bids:/app/bids
+      - ./bidsupportingdocs:/app/bidsupportingdocs
+    ports:
+      - "8000:8000"        # Exposed for direct API / Swagger access
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - anamac
+
+  # ─── Frontend: React (nginx) ─────────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: anamac-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"          # Browse at http://localhost:5173
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - anamac
+
+# ─── Internal network ────────────────────────────────────────────────────────
+networks:
+  anamac:
+    name: anamac_network
